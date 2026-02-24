@@ -3,13 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <title>Prode Mundial 2026</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h1, h2, h3 { margin-bottom: 10px; }
+    div { margin-bottom: 5px; }
+    input { width: 50px; margin: 0 5px; }
+    button { margin: 10px 0; padding: 5px 10px; }
+  </style>
 </head>
 <body>
   <h1>Prode Mundial 2026</h1>
 
+  <!-- Aquí se generan los inputs para los pronósticos -->
   <div id="pronosticos"></div>
+
+  <!-- Botón para guardar pronósticos -->
   <button onclick="guardarPronosticos()">Guardar pronósticos</button>
   <div id="mensaje"></div>
+
+  <!-- Tabla de posiciones -->
+  <div id="tabla"></div>
+  <button onclick="mostrarTabla()">Ver tabla de posiciones</button>
 
   <script>
     // ----- Datos iniciales -----
@@ -29,7 +43,16 @@
       { nombre: "Sofía", pronosticos: [] }
     ];
 
-    // ----- Generar formulario -----
+    // ----- Resultados reales de los partidos -----
+    let resultados = [
+      { local: "Argentina", visitante: "Brasil", golesLocal: 2, golesVisitante: 1 },
+      { local: "México", visitante: "España", golesLocal: 1, golesVisitante: 1 },
+      { local: "Francia", visitante: "Alemania", golesLocal: 0, golesVisitante: 3 },
+      { local: "Inglaterra", visitante: "Italia", golesLocal: 2, golesVisitante: 2 },
+      { local: "Portugal", visitante: "Holanda", golesLocal: 1, golesVisitante: 0 }
+    ];
+
+    // ----- Generar formulario dinámico -----
     function generarFormulario() {
       let div = document.getElementById("pronosticos");
       div.innerHTML = "";
@@ -63,6 +86,45 @@
 
       document.getElementById("mensaje").innerText = "Pronósticos guardados correctamente!";
       console.log(jugadores);
+    }
+
+    // ----- Calcular puntajes -----
+    function calcularPuntajes() {
+      jugadores.forEach(jugador => {
+        jugador.pronosticos.forEach((pronostico, i) => {
+          let real = resultados[i];
+
+          // Exacto
+          if(pronostico.golesLocal === real.golesLocal && pronostico.golesVisitante === real.golesVisitante){
+            pronostico.puntaje = 2;
+          } 
+          // Acertó resultado (ganador/empate)
+          else if((pronostico.golesLocal - pronostico.golesVisitante) === (real.golesLocal - real.golesVisitante)){
+            pronostico.puntaje = 1;
+          } 
+          else {
+            pronostico.puntaje = 0;
+          }
+        });
+
+        // Puntaje total
+        jugador.puntajeTotal = jugador.pronosticos.reduce((sum, p) => sum + p.puntaje, 0);
+      });
+    }
+
+    // ----- Mostrar tabla de posiciones -----
+    function mostrarTabla() {
+      calcularPuntajes();
+
+      let div = document.getElementById("tabla");
+      div.innerHTML = "<h2>Tabla de posiciones</h2>";
+
+      // Ordenar de mayor a menor
+      let ordenados = [...jugadores].sort((a,b) => b.puntajeTotal - a.puntajeTotal);
+
+      ordenados.forEach(j => {
+        div.innerHTML += `<div>${j.nombre}: ${j.puntajeTotal} pts</div>`;
+      });
     }
   </script>
 </body>
