@@ -50,7 +50,7 @@
       { local: "Portugal", visitante: "Holanda", golesLocal: 1, golesVisitante: 0 }
     ];
 
-    // ----- Generar formulario de pronósticos -----
+    // ----- Función para generar formulario -----
     function generarFormulario() {
       let div = document.getElementById("pronosticos");
       div.innerHTML = "";
@@ -79,7 +79,10 @@
       }
     }
 
-    generarFormulario();
+    // ----- Ejecutar todo después de que cargue la página -----
+    window.onload = function() {
+      generarFormulario();
+    };
 
     // ----- Guardar pronósticos -----
     function guardarPronosticos() {
