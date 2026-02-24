@@ -21,8 +21,7 @@
   <button onclick="guardarPronosticos()">Guardar pronósticos</button>
   <div id="mensaje"></div>
 
-  <!-- Botón y div para la tabla de posiciones -->
-  <button onclick="mostrarTabla()">Ver tabla de posiciones</button>
+  <!-- Div donde se generará la tabla y el botón -->
   <div id="tabla"></div>
 
   <script>
@@ -52,7 +51,7 @@
       { local: "Portugal", visitante: "Holanda", golesLocal: 1, golesVisitante: 0 }
     ];
 
-    // ----- Generar formulario -----
+    // ----- Generar formulario dinámico -----
     function generarFormulario() {
       let div = document.getElementById("pronosticos");
       div.innerHTML = "";
@@ -68,6 +67,17 @@
           `;
         });
       });
+
+      // ----- Generar botón de tabla automáticamente -----
+      let tablaDiv = document.getElementById("tabla");
+      // Si el botón ya existe, no lo volvemos a crear
+      if (!document.getElementById("btnTabla")) {
+        let botonTabla = document.createElement("button");
+        botonTabla.id = "btnTabla";
+        botonTabla.innerText = "Ver tabla de posiciones";
+        botonTabla.onclick = mostrarTabla;
+        tablaDiv.parentNode.insertBefore(botonTabla, tablaDiv);
+      }
     }
 
     generarFormulario();
@@ -103,4 +113,16 @@
       });
     }
 
-    // ----- Mostrar tabla de
+    // ----- Mostrar tabla de posiciones -----
+    function mostrarTabla() {
+      calcularPuntajes();
+      let div = document.getElementById("tabla");
+      div.innerHTML = "<h2>Tabla de posiciones</h2>";
+      let ordenados = [...jugadores].sort((a,b) => b.puntajeTotal - a.puntajeTotal);
+      ordenados.forEach(j => {
+        div.innerHTML += `<div>${j.nombre}: ${j.puntajeTotal} pts</div>`;
+      });
+    }
+  </script>
+</body>
+</html>
