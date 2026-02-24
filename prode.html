@@ -14,19 +14,19 @@
 <body>
   <h1>Prode Mundial 2026</h1>
 
-  <!-- Inputs para pronósticos -->
+  <!-- Div para los pronósticos -->
   <div id="pronosticos"></div>
 
   <!-- Botón para guardar pronósticos -->
   <button onclick="guardarPronosticos()">Guardar pronósticos</button>
   <div id="mensaje"></div>
 
-  <!-- Div donde se generará la tabla -->
+  <!-- Div para la tabla -->
   <div id="tabla"></div>
 
   <script>
     // ----- Datos -----
-    let partidos = [
+    const partidos = [
       { local: "Argentina", visitante: "Brasil" },
       { local: "México", visitante: "España" },
       { local: "Francia", visitante: "Alemania" },
@@ -34,7 +34,7 @@
       { local: "Portugal", visitante: "Holanda" }
     ];
 
-    let jugadores = [
+    const jugadores = [
       { nombre: "Juan", pronosticos: [] },
       { nombre: "María", pronosticos: [] },
       { nombre: "Carlos", pronosticos: [] },
@@ -42,7 +42,7 @@
       { nombre: "Sofía", pronosticos: [] }
     ];
 
-    let resultados = [
+    const resultados = [
       { local: "Argentina", visitante: "Brasil", golesLocal: 2, golesVisitante: 1 },
       { local: "México", visitante: "España", golesLocal: 1, golesVisitante: 1 },
       { local: "Francia", visitante: "Alemania", golesLocal: 0, golesVisitante: 3 },
@@ -50,9 +50,9 @@
       { local: "Portugal", visitante: "Holanda", golesLocal: 1, golesVisitante: 0 }
     ];
 
-    // ----- Función para generar formulario -----
+    // ----- Generar formulario de pronósticos -----
     function generarFormulario() {
-      let div = document.getElementById("pronosticos");
+      const div = document.getElementById("pronosticos");
       div.innerHTML = "";
 
       jugadores.forEach((jugador, j) => {
@@ -67,46 +67,30 @@
           `;
         });
       });
-
-      // ----- Crear botón de tabla si no existe -----
-      let tablaDiv = document.getElementById("tabla");
-      if (!document.getElementById("btnTabla")) {
-        let botonTabla = document.createElement("button");
-        botonTabla.id = "btnTabla";
-        botonTabla.innerText = "Ver tabla de posiciones";
-        botonTabla.onclick = mostrarTabla;
-        tablaDiv.parentNode.insertBefore(botonTabla, tablaDiv);
-      }
     }
-
-    // ----- Ejecutar todo después de que cargue la página -----
-    window.onload = function() {
-      generarFormulario();
-    };
 
     // ----- Guardar pronósticos -----
     function guardarPronosticos() {
       jugadores.forEach((jugador, j) => {
         jugador.pronosticos = [];
         partidos.forEach((p, i) => {
-          let golesLocal = parseInt(document.getElementById(`g${j}-${i}-local`).value) || 0;
-          let golesVisitante = parseInt(document.getElementById(`g${j}-${i}-visitante`).value) || 0;
+          const golesLocal = parseInt(document.getElementById(`g${j}-${i}-local`).value) || 0;
+          const golesVisitante = parseInt(document.getElementById(`g${j}-${i}-visitante`).value) || 0;
           jugador.pronosticos.push({ golesLocal, golesVisitante, puntaje: 0 });
         });
       });
       document.getElementById("mensaje").innerText = "Pronósticos guardados correctamente!";
-      console.log(jugadores);
     }
 
     // ----- Calcular puntajes -----
     function calcularPuntajes() {
       jugadores.forEach(jugador => {
         jugador.pronosticos.forEach((pronostico, i) => {
-          let real = resultados[i];
+          const real = resultados[i];
           if(pronostico.golesLocal === real.golesLocal && pronostico.golesVisitante === real.golesVisitante){
-            pronostico.puntaje = 2;
+            pronostico.puntaje = 3; // Resultado exacto
           } else if((pronostico.golesLocal - pronostico.golesVisitante) === (real.golesLocal - real.golesVisitante)){
-            pronostico.puntaje = 1;
+            pronostico.puntaje = 1; // Acertó ganador/empate
           } else {
             pronostico.puntaje = 0;
           }
@@ -118,13 +102,28 @@
     // ----- Mostrar tabla de posiciones -----
     function mostrarTabla() {
       calcularPuntajes();
-      let div = document.getElementById("tabla");
+      const div = document.getElementById("tabla");
       div.innerHTML = "<h2>Tabla de posiciones</h2>";
-      let ordenados = [...jugadores].sort((a,b) => b.puntajeTotal - a.puntajeTotal);
+      const ordenados = [...jugadores].sort((a,b) => b.puntajeTotal - a.puntajeTotal);
       ordenados.forEach(j => {
         div.innerHTML += `<div>${j.nombre}: ${j.puntajeTotal} pts</div>`;
       });
     }
+
+    // ----- Ejecutar después de que cargue la página -----
+    window.onload = function() {
+      generarFormulario();
+
+      // Crear botón de tabla automáticamente
+      const tablaDiv = document.getElementById("tabla");
+      if (!document.getElementById("btnTabla")) {
+        const botonTabla = document.createElement("button");
+        botonTabla.id = "btnTabla";
+        botonTabla.innerText = "Ver tabla de posiciones";
+        botonTabla.onclick = mostrarTabla;
+        tablaDiv.parentNode.insertBefore(botonTabla, tablaDiv);
+      }
+    };
   </script>
 </body>
 </html>
