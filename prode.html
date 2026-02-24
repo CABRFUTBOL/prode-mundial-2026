@@ -23,18 +23,28 @@ Brasil
 <p id="mensaje"></p>
 
 <script>
+
 function guardar() {
-  let nombre = document.getElementById("nombre").value;
-  let arg = document.getElementById("arg").value;
-  let bra = document.getElementById("bra").value;
 
-  localStorage.setItem("nombre", nombre);
-  localStorage.setItem("arg", arg);
-  localStorage.setItem("bra", bra);
+let nombre = document.getElementById("nombre").value;
+let arg = document.getElementById("arg").value;
+let bra = document.getElementById("bra").value;
 
-  document.getElementById("mensaje").innerText = "Pronóstico guardado ✅";
+localStorage.setItem("nombre", nombre);
+localStorage.setItem("arg", arg);
+localStorage.setItem("bra", bra);
+
+document.getElementById("mensaje").innerText = "Pronóstico guardado";
 }
-</script>
 
-</body>
-</html>
+function cargarDatos() {
+
+document.getElementById("nombre").value = localStorage.getItem("nombre") || "";
+document.getElementById("arg").value = localStorage.getItem("arg") || "";
+document.getElementById("bra").value = localStorage.getItem("bra") || "";
+
+}
+
+window.onload = cargarDatos;
+
+</script>
