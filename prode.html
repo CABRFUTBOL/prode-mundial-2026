@@ -21,11 +21,11 @@
   <button onclick="guardarPronosticos()">Guardar pronósticos</button>
   <div id="mensaje"></div>
 
-  <!-- Div donde se generará la tabla y el botón -->
+  <!-- Div donde se generará la tabla -->
   <div id="tabla"></div>
 
   <script>
-    // ----- Datos iniciales -----
+    // ----- Datos -----
     let partidos = [
       { local: "Argentina", visitante: "Brasil" },
       { local: "México", visitante: "España" },
@@ -42,7 +42,6 @@
       { nombre: "Sofía", pronosticos: [] }
     ];
 
-    // ----- Resultados reales -----
     let resultados = [
       { local: "Argentina", visitante: "Brasil", golesLocal: 2, golesVisitante: 1 },
       { local: "México", visitante: "España", golesLocal: 1, golesVisitante: 1 },
@@ -51,10 +50,11 @@
       { local: "Portugal", visitante: "Holanda", golesLocal: 1, golesVisitante: 0 }
     ];
 
-    // ----- Generar formulario dinámico -----
+    // ----- Generar formulario de pronósticos -----
     function generarFormulario() {
       let div = document.getElementById("pronosticos");
       div.innerHTML = "";
+
       jugadores.forEach((jugador, j) => {
         div.innerHTML += `<h3>${jugador.nombre}</h3>`;
         partidos.forEach((p, i) => {
@@ -68,9 +68,8 @@
         });
       });
 
-      // ----- Generar botón de tabla automáticamente -----
+      // ----- Crear botón de tabla si no existe -----
       let tablaDiv = document.getElementById("tabla");
-      // Si el botón ya existe, no lo volvemos a crear
       if (!document.getElementById("btnTabla")) {
         let botonTabla = document.createElement("button");
         botonTabla.id = "btnTabla";
