@@ -2,49 +2,68 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Cargar Pronóstico</title>
+  <title>Prode Mundial 2026</title>
 </head>
 <body>
+  <h1>Prode Mundial 2026</h1>
 
-<h1>PRODE MUNDIAL 2026</h1>
+  <div id="pronosticos"></div>
+  <button onclick="guardarPronosticos()">Guardar pronósticos</button>
+  <div id="mensaje"></div>
 
-<input type="text" id="nombre" placeholder="Tu nombre"><br><br>
+  <script>
+    // ----- Datos iniciales -----
+    let partidos = [
+      { local: "Argentina", visitante: "Brasil" },
+      { local: "México", visitante: "España" },
+      { local: "Francia", visitante: "Alemania" },
+      { local: "Inglaterra", visitante: "Italia" },
+      { local: "Portugal", visitante: "Holanda" }
+    ];
 
-Argentina
-<input type="number" id="arg" min="0">
+    let jugadores = [
+      { nombre: "Juan", pronosticos: [] },
+      { nombre: "María", pronosticos: [] },
+      { nombre: "Carlos", pronosticos: [] },
+      { nombre: "Lucía", pronosticos: [] },
+      { nombre: "Sofía", pronosticos: [] }
+    ];
 
-Brasil
-<input type="number" id="bra" min="0">
+    // ----- Generar formulario -----
+    function generarFormulario() {
+      let div = document.getElementById("pronosticos");
+      div.innerHTML = "";
 
-<br><br>
+      jugadores.forEach((jugador, j) => {
+        div.innerHTML += `<h3>${jugador.nombre}</h3>`;
+        partidos.forEach((p, i) => {
+          div.innerHTML += `
+            <div>
+              ${p.local} vs ${p.visitante}:
+              <input type="number" id="g${j}-${i}-local" min="0" placeholder="Goles ${p.local}">
+              <input type="number" id="g${j}-${i}-visitante" min="0" placeholder="Goles ${p.visitante}">
+            </div>
+          `;
+        });
+      });
+    }
 
-<button onclick="guardar()">Guardar</button>
+    generarFormulario();
 
-<p id="mensaje"></p>
+    // ----- Guardar pronósticos -----
+    function guardarPronosticos() {
+      jugadores.forEach((jugador, j) => {
+        jugador.pronosticos = [];
+        partidos.forEach((p, i) => {
+          let golesLocal = parseInt(document.getElementById(`g${j}-${i}-local`).value) || 0;
+          let golesVisitante = parseInt(document.getElementById(`g${j}-${i}-visitante`).value) || 0;
+          jugador.pronosticos.push({ golesLocal, golesVisitante, puntaje: 0 });
+        });
+      });
 
-<script>
-
-function guardar() {
-
-let nombre = document.getElementById("nombre").value;
-let arg = document.getElementById("arg").value;
-let bra = document.getElementById("bra").value;
-
-localStorage.setItem("nombre", nombre);
-localStorage.setItem("arg", arg);
-localStorage.setItem("bra", bra);
-
-document.getElementById("mensaje").innerText = "Pronóstico guardado";
-}
-
-function cargarDatos() {
-
-document.getElementById("nombre").value = localStorage.getItem("nombre") || "";
-document.getElementById("arg").value = localStorage.getItem("arg") || "";
-document.getElementById("bra").value = localStorage.getItem("bra") || "";
-
-}
-
-window.onload = cargarDatos;
-
-</script>
+      document.getElementById("mensaje").innerText = "Pronósticos guardados correctamente!";
+      console.log(jugadores);
+    }
+  </script>
+</body>
+</html>
